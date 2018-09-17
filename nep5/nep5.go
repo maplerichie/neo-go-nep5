@@ -93,28 +93,3 @@ func IsUsableAddress(addr []byte) bool {
 
 	return false
 }
-
-// Deploy NEP-5 Token to blockchain
-func (t Token) Deploy(ctx storage.Context) bool {
-	if !runtime.CheckWitness(t.Owner) {
-		return false
-	}
-
-	if !storage.Get(ctx, "initialized").(bool) {
-		storage.Put(ctx, "initialized", 1)
-		storage.Put(ctx, t.Owner, t.TotalSupply)
-		return AddToCirculation(ctx, t)
-	}
-
-	return false
-
-}
-
-// AddToCirculation add NEP-5 into circulation
-func AddToCirculation(ctx storage.Context, t Token) bool {
-	current_supply := storage.Get(ctx, t.CirculationKey).(int)
-
-	current_supply += t.TotalSupply
-	storage.Put(ctx, t.CirculationKey, current_supply)
-	return true
-}

@@ -3,6 +3,7 @@ package neogonep5
 import (
 	"github.com/maplerichie/neo-go-nep5/nep5"
 
+	"github.com/CityOfZion/neo-storm/interop/runtime"
 	"github.com/CityOfZion/neo-storm/interop/storage"
 	"github.com/CityOfZion/neo-storm/interop/util"
 )
@@ -57,7 +58,7 @@ func Main(operation string, args []interface{}) interface{} {
 		return token.Transfer(ctx, from, to, amount)
 	}
 	if operation == "deploy" {
-		return token.Deploy(ctx)
+		return Deploy(ctx, token)
 	}
 
 	return true
@@ -70,4 +71,29 @@ func CheckArgs(args []interface{}, length int) bool {
 	}
 
 	return false
+}
+
+// Deploy NEP-5 Token to blockchain
+func Deploy(ctx storage.Context, t nep5.Token) bool {
+	if !runtime.CheckWitness(t.Owner) {
+		return false
+	}
+
+	if !storage.Get(ctx, "initialized").(bool) {
+		storage.Put(ctx, "initialized", 1)
+		storage.Put(ctx, t.Owner, t.TotalSupply)
+		return AddToCirculation(ctx, t)
+	}
+
+	return false
+
+}
+
+// AddToCirculation add NEP-5 into circulation
+func AddToCirculation(ctx storage.Context, t nep5.Token) bool {
+	current_supply := storage.Get(ctx, t.CirculationKey).(int)
+
+	current_supply += t.TotalSupply
+	storage.Put(ctx, t.CirculationKey, current_supply)
+	return true
 }

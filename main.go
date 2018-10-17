@@ -91,9 +91,9 @@ func Deploy(ctx storage.Context, t nep5.Token) bool {
 
 // AddToCirculation add NEP-5 into circulation
 func AddToCirculation(ctx storage.Context, t nep5.Token) bool {
-	current_supply := storage.Get(ctx, t.CirculationKey).(int)
+	currentSupply := storage.Get(ctx, t.CirculationKey).(int)
 
-	current_supply += t.TotalSupply
-	storage.Put(ctx, t.CirculationKey, current_supply)
+	currentSupply += t.TotalSupply
+	storage.Put(ctx, t.CirculationKey, currentSupply)
 	return true
 }

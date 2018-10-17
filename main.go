@@ -1,7 +1,7 @@
 package neogonep5
 
 import (
-	"github.com/maplerichie/neo-go-nep5/nep5"
+	"github.com/CityOfZion/neo-storm/examples/token/nep5"
 
 	"github.com/CityOfZion/neo-storm/interop/runtime"
 	"github.com/CityOfZion/neo-storm/interop/storage"

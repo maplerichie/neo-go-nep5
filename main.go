@@ -47,7 +47,7 @@ func Main(operation string, args []interface{}) interface{} {
 	if operation == "totalSupply" {
 		return token.GetSupply(ctx)
 	}
-	if operation == "balanceOf" {
+	if operation == "balanceOf" && CheckArgs(args, 1) {
 		hodler := args[0].([]byte)
 		return token.BalanceOf(ctx, hodler)
 	}
@@ -59,6 +59,9 @@ func Main(operation string, args []interface{}) interface{} {
 	}
 	if operation == "deploy" {
 		return Deploy(ctx, token)
+	}
+	if operation == "circulation" {
+		return GetCirculation(ctx, token)
 	}
 
 	return true
@@ -96,4 +99,9 @@ func AddToCirculation(ctx storage.Context, t nep5.Token) bool {
 	currentSupply += t.TotalSupply
 	storage.Put(ctx, t.CirculationKey, currentSupply)
 	return true
+}
+
+// GetCirculation get current circulation amount
+func GetCirculation(ctx storage.Context, t nep5.Token) interface{} {
+	return storage.Get(ctx, t.CirculationKey)
 }
